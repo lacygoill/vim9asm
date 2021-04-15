@@ -1,0 +1,95 @@
+vim9asm.txt	vim9asm	Last change: April 15 2021
+VIM9ASM - TABLE OF CONTENTS                                        *vim9asm-toc*
+==============================================================================
+
+  Rationale
+  Installation
+  Commands
+  Customization
+  License
+
+RATIONALE                                                    *vim9asm-rationale*
+==============================================================================
+
+Vim9 comes with a builtin `:disassemble` command which displays the low-level
+instructions generated for a compiled function.  This output cannot be searched,
+is not syntax highlighted, and does not provide information regarding the
+meaning of each instruction.
+
+This package provides a custom `:Disassemble` command whose purpose is to
+display the output of the builtin `:disassemble` command in a new window.
+The code is syntax highlighted, and folded to let you focus on the instructions
+for a given line of Vim9 script.
+A hint can be displayed for the instruction name under the cursor.
+
+INSTALLATION                                              *vim9asm-installation*
+==============================================================================
+
+
+< Linux >_____________________________________________________________________~
+
+Run this shell command: >
+
+    git clone https://github.com/lacygoill/vim9asm.git ~/.vim/pack/vim9asm/opt/vim9asm
+
+Then, add this line in your vimrc: >
+
+    packadd vim9asm
+
+
+< Windows >___________________________________________________________________~
+
+Run this shell command: >
+
+    git clone https://github.com/lacygoill/vim9asm.git %USERPROFILE%\vimfiles\pack\vim9asm\opt\vim9asm
+
+Then, add this line in your vimrc: >
+
+    packadd vim9asm
+
+
+COMMANDS                                                      *vim9asm-commands*
+==============================================================================
+
+                                                  *:Vim9asmFocus* *:Vim9asmHint*
+
+In a vim9asm buffer, you can execute `:Vim9asmFocus` to make Vim automatically
+close all folds except the one in which the cursor is currently.
+
+You can also execute `:Vim9asmHint` to make Vim display a popup displaying a
+hint about the instruction name under the cursor.
+
+Both commands can be prefixed with a bang to disable their respective feature.
+
+
+CUSTOMIZATION                                            *vim9asm-customization*
+==============================================================================
+
+
+The hint popups can be customized with `g:vim9asm`:
+
+    # in a Vim9 script
+    g:vim9asm = {
+      # automatically open/close folds
+      autofocus: true,
+      # automatically display hint about instruction name under cursor in popup
+      autohint: true,
+      hint: {
+        # determine background color of popup
+        highlight: 'Pmenu',
+        # draw border around popup
+        border: [],
+        # determine characters used to draw border
+        borderchars: ['─', '│', '─', '│', '┌', '┐', '┘', '└'],
+      }
+    }
+
+
+LICENSE                                                        *vim9asm-license*
+==============================================================================
+
+VIM License
+
+
+==============================================================================
+vim:tw=78:sw=2:ts=8:ft=help:norl:nowrap:
