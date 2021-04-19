@@ -6,7 +6,7 @@ const autofocus: bool = get(g:, 'vim9asm', {})->get('autofocus', false)
 const autohint: bool = get(g:, 'vim9asm', {})->get('autohint', false)
 
 const POPUP_OPTS: dict<any> = {
-    highlight: 'Normal',
+    highlight: 'Pmenu',
     border: [],
     borderchars: ['─', '│', '─', '│', '┌', '┐', '┘', '└'],
 }
@@ -72,7 +72,7 @@ else
 endif
 lockvar! INST2HINT
 
-const AOF_LHS2NORM: dict<string> = {
+const LHS2NORM: dict<string> = {
     j: 'j',
     k: 'k',
     '<down>': "\<down>",
@@ -118,7 +118,8 @@ def vim9asm#disassemble(funcname: string, bang: string, mods: string) #{{{3
     setline(1, lines)
     setf vim9asm
     if autofocus
-        # `:exe` is necessary to suppress error at compile time
+        # `:exe` is necessary to suppress an error at compile time.
+        # The command is only installed in a vim9asm buffer.
         exe 'Vim9asmFocus'
     endif
     if autohint
@@ -133,7 +134,7 @@ def vim9asm#focus(disable: bool) #{{{3
         if foldclosed('.') >= 0
             norm! zvzz
         endif
-        for lhs in keys(AOF_LHS2NORM)
+        for lhs in keys(LHS2NORM)
             exe printf(
                 'nno <buffer><nowait> %s <cmd>call <sid>MoveAndOpenFold(%s, %d)<cr>',
                     lhs,
@@ -142,7 +143,7 @@ def vim9asm#focus(disable: bool) #{{{3
             )
         endfor
     elseif disable && !maparg->empty()
-        for lhs in keys(AOF_LHS2NORM)
+        for lhs in keys(LHS2NORM)
             exe 'sil! nunmap <buffer> ' .. lhs
         endfor
     endif
@@ -164,7 +165,16 @@ def vim9asm#foldexpr(lnum: number): string #{{{3
     var curline: string = getline(lnum)
     var prevline: string = getline(lnum - 1)
 
-    if lnum == 2
+    # The second line is a special case.{{{
+    #
+    # Usually, it's a Vim script line of code from the original function.
+    # However, it  might be a compiled  instruction if the header  contains some
+    # special syntax, like an optional argument:
+    #
+    #     def Func(x = 0)
+    #              ^---^
+    #}}}
+    if lnum == 2 && getline(2) !~ '^\s\+\d\+\s\+[A-Z_0-9]\+'
       || prevline == '' && curline != ''
     # Special case necessary to handle several consecutive  `:end*` statements.{{{
     #
@@ -236,7 +246,7 @@ def MoveAndOpenFold(lhs: string, cnt: number) #{{{3
     else
         sil! exe 'norm! zR'
             .. (cnt != 0 ? cnt : '')
-            .. AOF_LHS2NORM[lhs] .. 'zMzv'
+            .. LHS2NORM[lhs] .. 'zMzv'
     endif
 enddef
 #}}}2
