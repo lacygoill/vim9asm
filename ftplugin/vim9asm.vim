@@ -15,7 +15,7 @@ command -bar -bang -buffer Vim9asmHint vim9asm#hint(<bang>0)
 
 # Teardown {{{1
 
-b:undo_ftplugin = get(b:, 'undo_ftplugin', 'execute')
+b:undo_ftplugin = get(b:, 'undo_ftplugin', 'exe')
     .. '| set buftype< foldexpr< foldmethod< foldtext< modifiable< readonly< swapfile<'
     .. '| delcommand Vim9asmFocus'
     .. '| delcommand Vim9asmHint'

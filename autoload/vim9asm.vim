@@ -47,7 +47,7 @@ if filereadable(HEADERFILE)
                 var j: number = i + 1
                 while lines[j] =~ get_continuation
                     hint ..= lines[j]->matchstr(get_continuation)
-                    j += 1
+                    ++j
                 endwhile
                 if hint !~ '\S'
                     var jj: number = i - 1
@@ -56,12 +56,12 @@ if filereadable(HEADERFILE)
                             hint = lines[jj]->matchstr(get_hint)
                             break
                         endif
-                        jj -= 1
+                        --jj
                     endwhile
                 endif
                 INST2HINT[line->matchstr(get_ins_name)] = hint
             endif
-            i += 1
+            ++i
         endfor
         INST2HINT->filter((_, v: string): bool => v =~ '\S')
     enddef
@@ -199,7 +199,7 @@ def vim9asm#foldtext(lnum: number): string #{{{3
             if title !~ '^\s*#'
                 return title
             endif
-            i += 1
+            ++i
         endwhile
     endif
     return title
@@ -244,7 +244,7 @@ def MoveAndOpenFold(lhs: string, cnt: number) #{{{3
             sil! norm! gjzRgkzMzv
         endif
     else
-        sil! exe 'norm! zR'
+        exe 'sil! norm! zR'
             .. (cnt != 0 ? cnt : '')
             .. LHS2NORM[lhs] .. 'zMzv'
     endif
