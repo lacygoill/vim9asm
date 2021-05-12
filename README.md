@@ -60,7 +60,7 @@ Run this shell command:
 
 Then, add this line in your vimrc:
 
-    packadd vim9asm
+    packadd! vim9asm
 
 ## Windows
 
@@ -70,7 +70,7 @@ Run this shell command:
 
 Then, add this line in your vimrc:
 
-    packadd vim9asm
+    packadd! vim9asm
 
 # License
 
