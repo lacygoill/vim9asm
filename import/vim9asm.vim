@@ -50,6 +50,7 @@ export const HINTS: dict<string> = {
     ISN_INSTR: 'instructions compiled from expression',
     ISN_JUMP: 'jump if condition is matched isn_arg.jump',
     ISN_JUMP_IF_ARG_SET: 'jump if argument is already set, uses isn_arg.jumparg',
+    ISN_LEGACY_EVAL: 'evaluate expression isn_arg.string with legacy syntax.',
     ISN_LISTAPPEND: 'append to a list, like add()',
     ISN_LISTINDEX: '[expr] list index',
     ISN_LISTSLICE: '[expr:expr] list slice',
