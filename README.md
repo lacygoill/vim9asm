@@ -27,6 +27,16 @@ This package provides a custom `:Disassemble` command whose purpose is to displa
     # stop automatically opening/closing folds
     :Vim9asmFocus!
 
+---
+
+To disassemble a script-local function from the command-line, you need to provide the full name of the function, including its script ID.  To do so, prepend its name with a `*` wildcard, append an opening parenthesis,
+then press Tab to make Vim complete the name:
+
+    :Disassemble *Funcname(
+    # press Tab
+    :Disassemble <SNR>123_Funcname(
+    # press Enter
+
 # Configuration
 
 The plugin can be customized with `g:vim9asm`:

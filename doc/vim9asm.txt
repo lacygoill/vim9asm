@@ -34,7 +34,7 @@ Run this shell command: >
 
 Then, add this line in your vimrc: >
 
-    packadd vim9asm
+    packadd! vim9asm
 
 
 < Windows >___________________________________________________________________~
@@ -45,7 +45,7 @@ Run this shell command: >
 
 Then, add this line in your vimrc: >
 
-    packadd vim9asm
+    packadd! vim9asm
 
 
 COMMANDS                                                      *vim9asm-commands*
@@ -62,11 +62,24 @@ hint about the instruction name under the cursor.
 Both commands can be prefixed with a bang to disable their respective feature.
 
 
+                                                          *vim9asm-script-local*
+
+To disassemble a script-local function from the command-line, you need to
+provide the full name of the function, including its script ID.
+To do so, prepend its name with a `*` wildcard, append an opening parenthesis,
+then press Tab to make Vim complete the name. >
+
+    :Disassemble *Funcname(
+    # press Tab
+    :Disassemble <SNR>123_Funcname(
+    # press Enter
+<
+
 CUSTOMIZATION                                            *vim9asm-customization*
 ==============================================================================
 
 
-The hint popups can be customized with `g:vim9asm`:
+The hint popups can be customized with `g:vim9asm`: >
 
     # in a Vim9 script
     g:vim9asm = {
@@ -83,7 +96,7 @@ The hint popups can be customized with `g:vim9asm`:
         borderchars: ['─', '│', '─', '│', '┌', '┐', '┘', '└'],
       }
     }
-
+<
 
 LICENSE                                                        *vim9asm-license*
 ==============================================================================

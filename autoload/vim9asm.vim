@@ -90,7 +90,8 @@ def vim9asm#disassemble(funcname: string, bang: string, mods: string) #{{{3
         echo USAGE->join("\n")
         return
     endif
-    var name: string = funcname->trim('()')
+
+    var name: string = funcname->trim(')')->trim('(')
     if bufexists(name)
         var buf: number = bufnr(name)
         var winid: number = buf
@@ -104,18 +105,31 @@ def vim9asm#disassemble(funcname: string, bang: string, mods: string) #{{{3
         endif
         return
     endif
-    var lines: list<string>
+
+    var instructions: list<string>
     try
-        lines = execute('disa' .. bang .. ' ' .. name)->split('\n')
+        instructions = execute('disa' .. bang .. ' ' .. name)->split('\n')
+    # E1061: Cannot find function Funcname
+    catch /^Vim\%((\a\+)\)\=:E1061:/
+        # If `:Disa` was executed from  a script, rather than interactively from
+        # the command-line, we should retry  after looking for "Funcname" in the
+        # script namespace.
+        instructions = RetryAsLocalFunction(bang, name)
+        if instructions->empty()
+            Error(v:exception)
+            return
+        endif
     catch
         Error(v:exception)
         return
     endtry
-    if empty(lines)
+
+    if instructions->empty()
         return
     endif
+
     exe mods .. ' new'
-    setline(1, lines)
+    instructions->setline(1)
     setf vim9asm
     if autofocus
         # `:exe` is necessary to suppress an error at compile time.
@@ -206,6 +220,32 @@ def vim9asm#foldtext(lnum: number): string #{{{3
 enddef
 #}}}2
 # Core {{{2
+def RetryAsLocalFunction(bang: string, name: string): list<string> #{{{3
+    if name =~ ':' && name !~ '^s:'
+        return []
+    endif
+    var basename: string = name->substitute('^s:', '', '')
+    # list of function names matching the one we're looking for
+    var fullnames: list<string> = getcompletion('*' .. basename .. '(', 'function')
+    # path to the script from where `:Disa` has been executed
+    var calling_script: string = GetCallingScript()
+    var fullname: string = fullnames
+        # the function we're looking for *must* have been defined in the calling script
+        ->filter((_, v: string): bool => v->FuncScript() == calling_script)
+        ->get(0, '')
+    if fullname !~ '^<SNR>\d\+_' .. basename .. '('
+        return []
+    endif
+    var instructions: list<string>
+    try
+        instructions = execute('disa' .. bang .. ' ' .. fullname)
+            ->split('\n')
+    catch
+        return []
+    endtry
+    return instructions
+enddef
+
 def GiveHint() #{{{3
     if NothingUnderCursor() || PopupIsOpen()
         return
@@ -251,8 +291,26 @@ def MoveAndOpenFold(lhs: string, cnt: number) #{{{3
 enddef
 #}}}2
 # Util {{{2
+def GetCallingScript(): string #{{{3
+    var calls: list<string> = expand('<stack>')
+        ->split('\.\.')
+    return calls
+        ->get(calls->match('\C\<vim9asm#disassemble\>') - 1, '')
+        ->matchstr('\S\+\ze\[\d\+\]$')
+enddef
+
+def FuncScript(funcname: string): string #{{{3
+    return execute('verb def ' .. funcname->trim(')')->trim('('))
+        ->split('\n')
+        ->get(1, '')
+        ->matchstr('^\s*Last set from \zs\S\+')
+        ->substitute('^\~/', $HOME .. '/', '')
+enddef
+
 def Error(msg: string) #{{{3
-    echohl msg
+    # `:h :echo-redraw`
+    redraw
+    echohl ErrorMsg
     echom msg
     echohl NONE
 enddef
