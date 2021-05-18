@@ -83,25 +83,6 @@ const LHS2NORM: dict<string> = {
     G: 'G',
 }
 
-# lambda argument(s)
-var args: string = '\%('
-    .. '[^(]' .. '\|' .. '\%(\<func\)\@4<=('
-    ..  '\)*'
-# lambda possible return type
-var return_type: string = args
-
-const HERE2THERE: dict<dict<string>> = {
-    # if we're on a Vim9 lambda, try to jump to its `FUNCREF` instruction
-    lambda: {
-        here:
-               '(' ..  args .. ')'
-            .. '\%(: ' .. return_type .. '\)\='
-            .. ' \+=>\%( \+.*\|$\)',
-
-        there: '^\s*\d\+ \zsFUNCREF <lambda>\d\+$',
-    }
-}
-
 # Functions {{{1
 # Interface {{{2
 def vim9asm#disassemble(funcname: string, bang: string, mods: string) #{{{3
@@ -119,7 +100,7 @@ def vim9asm#disassemble(funcname: string, bang: string, mods: string) #{{{3
         if winid != 0
             win_gotoid(winid)
         else
-            exe mods .. ' new'
+            SplitWindow(mods)
             exe 'b ' .. buf
         endif
         return
@@ -147,7 +128,7 @@ def vim9asm#disassemble(funcname: string, bang: string, mods: string) #{{{3
         return
     endif
 
-    exe mods .. ' new'
+    SplitWindow(mods)
     instructions->setline(1)
     setf vim9asm
     if autofocus
@@ -159,6 +140,23 @@ def vim9asm#disassemble(funcname: string, bang: string, mods: string) #{{{3
         exe 'Vim9asmHint'
     endif
     exe 'file ' .. name->fnameescape()
+enddef
+
+def vim9asm#disassembleLambda() #{{{3
+    var col: number = col('.')
+    var cursor_is_after: string = '\%<' .. (col + 1) .. 'c'
+    var cursor_is_before: string = '\%>' .. col .. 'c'
+
+    var here: string = '<lambda>\d\+\>'
+    var lambda: string =
+           cursor_is_after .. '\C' .. here .. cursor_is_before
+        .. '\|'
+        .. '\%' .. col .. 'c' .. here
+    if search(lambda, 'bcnW') > 0
+        getline('.')
+            ->matchstr(lambda)
+            ->vim9asm#disassemble('', 'nosplit')
+    endif
 enddef
 
 def vim9asm#focus(disable: bool) #{{{3
@@ -237,30 +235,6 @@ def vim9asm#foldtext(lnum: number): string #{{{3
     endif
     return title
 enddef
-
-def vim9asm#jumpToRelevantInstruction() #{{{3
-    var col: number = col('.')
-    var cursor_is_after: string = '\%<' .. (col + 1) .. 'c'
-    var cursor_is_before: string = '\%>' .. col .. 'c'
-
-    for [here: string, there: string] in HERE2THERE
-      ->values()
-      ->mapnew((_, v: dict<string>): list<string> => v->values())
-        var pat: string =
-               cursor_is_after .. '\C' .. here .. cursor_is_before
-            .. '\|'
-            .. '\%' .. col .. 'c' .. here
-        if search(pat, 'bcnW') > 0
-            # TODO: The Vim9 code could be  arbitrarily complex (e.g. nested lambdas
-            # all  over  the  place).   In  which   case,  how  to  find  the  right
-            # instruction?  For the moment, let's set the search register; this way,
-            # if we don't land  on the right instruction, we just  need to press `n`
-            # one or a few more times.
-            @/ = '\C' .. there
-            search(@/, 'W')
-        endif
-    endfor
-enddef
 #}}}2
 # Core {{{2
 def RetryAsLocalFunction(bang: string, name: string): list<string> #{{{3
@@ -334,6 +308,14 @@ def MoveAndOpenFold(lhs: string, cnt: number) #{{{3
 enddef
 #}}}2
 # Util {{{2
+def SplitWindow(mods: string) #{{{3
+    if mods == 'nosplit'
+        enew
+    else
+        exe mods .. ' new'
+    endif
+enddef
+
 def GetCallingScript(): string #{{{3
     var calls: list<string> = expand('<stack>')
         ->split('\.\.')

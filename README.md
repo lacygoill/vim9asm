@@ -37,6 +37,10 @@ then press Tab to make Vim complete the name:
     :Disassemble <SNR>123_Funcname(
     # press Enter
 
+---
+
+While the cursor is on a `<lambda>123` token inside a generated instruction, you can press `<C-]>` to get the instructions for that lambda.
+
 # Configuration
 
 The plugin can be customized with `g:vim9asm`:

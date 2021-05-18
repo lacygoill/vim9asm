@@ -75,6 +75,12 @@ then press Tab to make Vim complete the name. >
     # press Enter
 <
 
+                                                                *vim9asm-lambda*
+
+While the cursor is on a `<lambda>123` token inside a generated instruction,
+you can press `<C-]>` to get the instructions for that lambda.
+
+
 CUSTOMIZATION                                            *vim9asm-customization*
 ==============================================================================
 
