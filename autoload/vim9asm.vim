@@ -83,6 +83,25 @@ const LHS2NORM: dict<string> = {
     G: 'G',
 }
 
+# lambda argument(s)
+var args: string = '\%('
+    .. '[^(]' .. '\|' .. '\%(\<func\)\@4<=('
+    ..  '\)*'
+# lambda possible return type
+var return_type: string = args
+
+const HERE2THERE: dict<dict<string>> = {
+    # if we're on a Vim9 lambda, try to jump to its `FUNCREF` instruction
+    lambda: {
+        here:
+               '(' ..  args .. ')'
+            .. '\%(: ' .. return_type .. '\)\='
+            .. ' \+=>\%( \+.*\|$\)',
+
+        there: '^\s*\d\+ \zsFUNCREF <lambda>\d\+$',
+    }
+}
+
 # Functions {{{1
 # Interface {{{2
 def vim9asm#disassemble(funcname: string, bang: string, mods: string) #{{{3
@@ -218,6 +237,30 @@ def vim9asm#foldtext(lnum: number): string #{{{3
     endif
     return title
 enddef
+
+def vim9asm#jumpToRelevantInstruction() #{{{3
+    var col: number = col('.')
+    var cursor_is_after: string = '\%<' .. (col + 1) .. 'c'
+    var cursor_is_before: string = '\%>' .. col .. 'c'
+
+    for [here: string, there: string] in HERE2THERE
+      ->values()
+      ->mapnew((_, v: dict<string>): list<string> => v->values())
+        var pat: string =
+               cursor_is_after .. '\C' .. here .. cursor_is_before
+            .. '\|'
+            .. '\%' .. col .. 'c' .. here
+        if search(pat, 'bcnW') > 0
+            # TODO: The Vim9 code could be  arbitrarily complex (e.g. nested lambdas
+            # all  over  the  place).   In  which   case,  how  to  find  the  right
+            # instruction?  For the moment, let's set the search register; this way,
+            # if we don't land  on the right instruction, we just  need to press `n`
+            # one or a few more times.
+            @/ = '\C' .. there
+            search(@/, 'W')
+        endif
+    endfor
+enddef
 #}}}2
 # Core {{{2
 def RetryAsLocalFunction(bang: string, name: string): list<string> #{{{3
@@ -231,7 +274,7 @@ def RetryAsLocalFunction(bang: string, name: string): list<string> #{{{3
     var calling_script: string = GetCallingScript()
     var fullname: string = fullnames
         # the function we're looking for *must* have been defined in the calling script
-        ->filter((_, v: string): bool => v->FuncScript() == calling_script)
+        ->filter((_, v: string): bool => v->GetFuncScript() == calling_script)
         ->get(0, '')
     if fullname !~ '^<SNR>\d\+_' .. basename .. '('
         return []
@@ -299,7 +342,7 @@ def GetCallingScript(): string #{{{3
         ->matchstr('\S\+\ze\[\d\+\]$')
 enddef
 
-def FuncScript(funcname: string): string #{{{3
+def GetFuncScript(funcname: string): string #{{{3
     return execute('verb def ' .. funcname->trim(')')->trim('('))
         ->split('\n')
         ->get(1, '')
