@@ -10,7 +10,7 @@ setlocal buftype=nofile nomodifiable noswapfile readonly
 
 # Mappings {{{1
 
-nnoremap <buffer><nowait><silent> <c-]> <cmd>call vim9asm#disassembleLambda()<cr>
+nnoremap <buffer><nowait> <c-]> <cmd>call vim9asm#disassembleLambda()<cr>
 
 # Commands {{{1
 

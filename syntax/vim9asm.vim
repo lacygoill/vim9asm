@@ -4,7 +4,7 @@ endif
 
 syn match vim9asmFuncname /^\S.*/ display
 
-syn match vim9asmInsIndex /\d\+/ nextgroup=vim9asmInsName skipwhite display
+syn match vim9asmInsIndex /^\s*\d\+/ nextgroup=vim9asmInsName skipwhite display
 syn match vim9asmInsName /[A-Z_0-9]\+/ contained nextgroup=vim9asmInsArguments skipwhite display
 syn match vim9asmInsArguments /.*/ contained display
 

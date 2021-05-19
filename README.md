@@ -29,16 +29,6 @@ This package provides a custom `:Disassemble` command whose purpose is to displa
 
 ---
 
-To disassemble a script-local function from the command-line, you need to provide the full name of the function, including its script ID.  To do so, prepend its name with a `*` wildcard, append an opening parenthesis,
-then press Tab to make Vim complete the name:
-
-    :Disassemble *Funcname(
-    # press Tab
-    :Disassemble <SNR>123_Funcname(
-    # press Enter
-
----
-
 While the cursor is on a `<lambda>123` token inside a generated instruction, you can press `<C-]>` to get the instructions for that lambda.
 
 # Configuration

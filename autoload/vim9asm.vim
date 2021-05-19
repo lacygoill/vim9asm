@@ -85,6 +85,13 @@ const LHS2NORM: dict<string> = {
 
 # Functions {{{1
 # Interface {{{2
+def vim9asm#complete(arglead: string, _, _): list<string> #{{{3
+    return arglead
+        ->substitute('^\Cs:', '<SNR>*', '')
+        ->getcompletion('function')
+        ->filter((_, v: string): bool => !(v =~ '^\l' && v !~ '#'))
+enddef
+
 def vim9asm#disassemble(funcname: string, bang: string, mods: string) #{{{3
     if funcname->empty()
         echo USAGE->join("\n")

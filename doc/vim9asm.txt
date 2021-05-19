@@ -62,19 +62,6 @@ hint about the instruction name under the cursor.
 Both commands can be prefixed with a bang to disable their respective feature.
 
 
-                                                          *vim9asm-script-local*
-
-To disassemble a script-local function from the command-line, you need to
-provide the full name of the function, including its script ID.
-To do so, prepend its name with a `*` wildcard, append an opening parenthesis,
-then press Tab to make Vim complete the name. >
-
-    :Disassemble *Funcname(
-    # press Tab
-    :Disassemble <SNR>123_Funcname(
-    # press Enter
-<
-
                                                                 *vim9asm-lambda*
 
 While the cursor is on a `<lambda>123` token inside a generated instruction,
