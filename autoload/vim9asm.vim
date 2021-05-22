@@ -92,7 +92,11 @@ def vim9asm#complete(arglead: string, _, _): list<string> #{{{3
         ->filter((_, v: string): bool => !(v =~ '^\l' && v !~ '#'))
 enddef
 
-def vim9asm#disassemble(funcname: string, bang: string, mods: string) #{{{3
+def vim9asm#disassemble( #{{{3
+    funcname: string,
+    bang: string,
+    mods: string
+)
     if funcname->empty()
         echo USAGE->join("\n")
         return
@@ -244,7 +248,11 @@ def vim9asm#foldtext(lnum: number): string #{{{3
 enddef
 #}}}2
 # Core {{{2
-def RetryAsLocalFunction(bang: string, name: string): list<string> #{{{3
+def RetryAsLocalFunction( #{{{3
+    bang: string,
+    name: string
+): list<string>
+
     if name =~ ':' && name !~ '^s:'
         return []
     endif
