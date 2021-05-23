@@ -83,6 +83,8 @@ const LHS2NORM: dict<string> = {
     G: 'G',
 }
 
+var func_stacks: dict<list<number>>
+
 # Functions {{{1
 # Interface {{{2
 def vim9asm#complete(arglead: string, _, _): list<string> #{{{3
@@ -103,6 +105,7 @@ def vim9asm#disassemble( #{{{3
     endif
 
     var name: string = funcname->trim(')')->trim('(')
+    # special case, we've already disassembled the function
     if bufexists(name)
         var buf: number = bufnr(name)
         var winid: number = buf
@@ -111,8 +114,13 @@ def vim9asm#disassemble( #{{{3
         if winid != 0
             win_gotoid(winid)
         else
-            SplitWindow(mods)
+            # We don't want `SplitWindow()` to run `:enew` here (it would create
+            # a useless empty buffer, which would break `C-^`).
+            if mods != 'nosplit'
+                SplitWindow(mods)
+            endif
             exe 'b ' .. buf
+            PushFuncOnStack()
         endif
         return
     endif
@@ -151,21 +159,30 @@ def vim9asm#disassemble( #{{{3
         exe 'Vim9asmHint'
     endif
     exe 'file ' .. name->fnameescape()
+    PushFuncOnStack()
 enddef
 
-def vim9asm#disassembleLambda() #{{{3
+def vim9asm#disassembleFunctionUnderCursor() #{{{3
     var col: number = col('.')
     var cursor_is_after: string = '\%<' .. (col + 1) .. 'c'
     var cursor_is_before: string = '\%>' .. col .. 'c'
 
-    var here: string = '<lambda>\d\+\>'
+    var Im_here: string = '[^ (]\+'
+    var defcall: string = '^\s*\d\+\s\+\CDCALL\s\+'
+        .. '\zs' .. cursor_is_after .. Im_here .. cursor_is_before
+
+    Im_here = '<lambda>\d\+\>'
     var lambda: string =
-           cursor_is_after .. '\C' .. here .. cursor_is_before
-        .. '\|'
-        .. '\%' .. col .. 'c' .. here
-    if search(lambda, 'bcnW') > 0
-        getline('.')
+        cursor_is_after .. '\C' .. Im_here .. cursor_is_before
+
+    var curline: string = getline('.')
+    if curline =~ lambda
+        curline
             ->matchstr(lambda)
+            ->vim9asm#disassemble('', 'nosplit')
+    elseif curline =~ defcall
+        curline
+            ->matchstr(defcall)
             ->vim9asm#disassemble('', 'nosplit')
     endif
 enddef
@@ -246,8 +263,34 @@ def vim9asm#foldtext(lnum: number): string #{{{3
     endif
     return title
 enddef
+
+def vim9asm#popFuncFromStack() #{{{3
+    var winid: number = win_getid()
+    if !func_stacks->has_key(winid)
+    # `->empty()` is not enough.  We really need `->len() <= 1`.{{{
+    #
+    # Otherwise, when pressing  `C-t` while at the bottom of  the stack (i.e. in
+    # the  first disassembled  function), the  next `remove()`  would empty  the
+    # stack.  Because of that, later, after pressing `C-]`, you wouldn't be able
+    # to return to the first function.
+    #}}}
+    || func_stacks[winid]->len() <= 1
+        Error('at bottom of function stack')
+        return
+    endif
+    func_stacks[winid]->remove(-1)
+    exe 'b ' .. func_stacks[winid][-1]
+enddef
 #}}}2
 # Core {{{2
+def PushFuncOnStack() #{{{3
+    var winid: number = win_getid()
+    if !func_stacks->has_key(winid)
+        func_stacks->extend({[winid]: []})
+    endif
+    func_stacks[winid] += [bufnr('%')]
+enddef
+
 def RetryAsLocalFunction( #{{{3
     bang: string,
     name: string

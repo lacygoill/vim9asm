@@ -29,7 +29,7 @@ This package provides a custom `:Disassemble` command whose purpose is to displa
 
 ---
 
-While the cursor is on a `<lambda>123` token inside a generated instruction, you can press `<C-]>` to get the instructions for that lambda.
+While the cursor is on the name of a function inside a generated instruction, you can press `<C-]>` to get the instructions for that function.  To jump back to the previous one, press `<C-T>`.
 
 # Configuration
 
