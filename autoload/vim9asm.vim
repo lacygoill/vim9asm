@@ -83,6 +83,19 @@ const LHS2NORM: dict<string> = {
     G: 'G',
 }
 
+const VIMSCRIPT_LINE: string =
+       '^\%(\s*\%('
+            # a Vim9 generated instruction
+    ..     '\d\+\s\+[A-Z_0-9]\+'
+    .. '\|'
+            # or a Vim9 comment
+    ..     '#'
+    .. '\)\)'
+       # we don't want to start a fold on any of those
+    .. '\@!'
+       # and we don't want to start a fold on an empty line
+    .. '.'
+
 var func_stacks: dict<list<number>>
 
 # Functions {{{1
@@ -221,31 +234,9 @@ def vim9asm#hint(disable: bool) #{{{3
 enddef
 
 def vim9asm#foldexpr(lnum: number): string #{{{3
-    var curline: string = getline(lnum)
-    var prevline: string = getline(lnum - 1)
-
-    # The second line is a special case.{{{
-    #
-    # Usually, it's a Vim script line of code from the original function.
-    # However, it  might be a compiled  instruction if the header  contains some
-    # special syntax, like an optional argument:
-    #
-    #     def Func(x = 0)
-    #              ^---^
-    #}}}
-    if lnum == 2 && getline(2) !~ '^\s\+\d\+\s\+[A-Z_0-9]\+'
-      || prevline == '' && curline != ''
-    # Special case necessary to handle several consecutive  `:end*` statements.{{{
-    #
-    # E.g.,  without, the  original source  code contains  2 `endif`,  the first
-    # would start a fold, but not the second one.
-    # We need the 2nd  `endif` to also start a fold, because we  want to see the
-    # complete source code when the buffer is folded.
-    #}}}
-      || curline =~ '^\C\s*end\%(def\|for\|if\|try\|while\)$'
+    if getline(lnum) =~ VIMSCRIPT_LINE
         return '>1'
     endif
-
     return '='
 enddef
 
