@@ -5,6 +5,7 @@ vim9script
 setlocal foldmethod=expr
 setlocal foldexpr=vim9asm#foldexpr(v:lnum)
 setlocal foldtext=vim9asm#foldtext(v:lnum)
+setlocal foldminlines=0
 
 setlocal buftype=nofile nomodifiable noswapfile readonly
 
@@ -21,7 +22,7 @@ command -bar -bang -buffer Vim9asmHint vim9asm#hint(<bang>0)
 # Teardown {{{1
 
 b:undo_ftplugin = get(b:, 'undo_ftplugin', 'exe')
-    .. '| set buftype< foldexpr< foldmethod< foldtext< modifiable< readonly< swapfile<'
+    .. '| set buftype< foldexpr< foldmethod< foldminlines< foldtext< modifiable< readonly< swapfile<'
     .. '| exe "nunmap <buffer> <c-]>"'
     .. '| exe "nunmap <buffer> <c-t>"'
     .. '| delcommand Vim9asmFocus'
