@@ -1,7 +1,7 @@
 This script must be used to generate/update the import file:
 
-    import/vim9asm.vim
+    import/hints.vim
 
 To do so, run this shell command:
 
-    $ vim +'sil so tools/vim9asm.vim'
+    $ vim +'silent source tools/GetHints.vim'

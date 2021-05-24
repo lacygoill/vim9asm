@@ -31,7 +31,7 @@ const USAGE: list<string> =<< trim END
         :tab Disassemble MyCompiledFunctionName
 END
 
-import HINTS from '../import/vim9asm.vim'
+import HINTS from '../import/hints.vim'
 
 const LHS2NORM: dict<string> = {
     j: 'j',
