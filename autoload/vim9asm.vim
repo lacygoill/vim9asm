@@ -33,7 +33,7 @@ END
 
 import HINTS from '../import/hints.vim'
 
-const LHS2NORM: dict<string> = {
+const TRANSLATED: dict<string> = {
     j: 'j',
     k: 'k',
     '<down>': "\<down>",
@@ -167,7 +167,7 @@ def vim9asm#focus(disable: bool) #{{{3
         if foldclosed('.') >= 0
             norm! zvzz
         endif
-        for lhs in keys(LHS2NORM)
+        for lhs in keys(TRANSLATED)
             exe printf(
                 'nno <buffer><nowait> %s <cmd>call <sid>MoveAndOpenFold(%s, %d)<cr>',
                     lhs,
@@ -176,7 +176,7 @@ def vim9asm#focus(disable: bool) #{{{3
             )
         endfor
     elseif disable && !maparg->empty()
-        for lhs in keys(LHS2NORM)
+        for lhs in keys(TRANSLATED)
             exe 'sil! nunmap <buffer> ' .. lhs
         endfor
     endif
@@ -310,7 +310,7 @@ def MoveAndOpenFold(lhs: string, cnt: number) #{{{3
     else
         exe 'sil! norm! zR'
             .. (cnt != 0 ? cnt : '')
-            .. LHS2NORM[lhs] .. 'zMzv'
+            .. TRANSLATED[lhs] .. 'zMzv'
     endif
 enddef
 #}}}2
