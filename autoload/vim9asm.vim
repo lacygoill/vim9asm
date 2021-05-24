@@ -13,7 +13,6 @@ const POPUP_OPTS: dict<any> = {
     # take into consideration possible user config
     ->extend(get(g:, 'vim9asm', {})->get('hint', {}))
 
-const HEADERFILE: string = $HOME .. '/Vcs/vim/src/vim9.h'
 
 # Init {{{1
 
@@ -32,45 +31,7 @@ const USAGE: list<string> =<< trim END
         :tab Disassemble MyCompiledFunctionName
 END
 
-var INST2HINT: dict<string>
-if filereadable(HEADERFILE)
-    def GetHints()
-        var lines: list<string> = readfile(HEADERFILE)
-        var get_ins_name: string = '^\C\s*\zs[A-Z_0-9]\+'
-        var get_hint: string = '//\s*\zs.*'
-        var i: number
-        for line in lines
-            if line =~ get_ins_name
-                var hint: string = line->matchstr(get_hint)
-                # The hint could continue on the next line(s).
-                var get_continuation: string = '^\C\s*//\%(\s*[A-Z_0-9]\+\)\@!\s*\zs\s.*'
-                var j: number = i + 1
-                while lines[j] =~ get_continuation
-                    hint ..= lines[j]->matchstr(get_continuation)
-                    ++j
-                endwhile
-                if hint !~ '\S'
-                    var jj: number = i - 1
-                    while jj > 0
-                        if lines[jj] =~ '^\s*//'
-                            hint = lines[jj]->matchstr(get_hint)
-                            break
-                        endif
-                        --jj
-                    endwhile
-                endif
-                INST2HINT[line->matchstr(get_ins_name)] = hint
-            endif
-            ++i
-        endfor
-        INST2HINT->filter((_, v: string): bool => v =~ '\S')
-    enddef
-    GetHints()
-else
-    import HINTS from '../import/vim9asm.vim'
-    INST2HINT = HINTS
-endif
-lockvar! INST2HINT
+import HINTS from '../import/vim9asm.vim'
 
 const LHS2NORM: dict<string> = {
     j: 'j',
@@ -234,10 +195,7 @@ def vim9asm#hint(disable: bool) #{{{3
 enddef
 
 def vim9asm#foldexpr(lnum: number): string #{{{3
-    if getline(lnum) =~ VIMSCRIPT_LINE
-        return '>1'
-    endif
-    return '='
+    return getline(lnum) =~ VIMSCRIPT_LINE ? '>1' : '='
 enddef
 
 def vim9asm#foldtext(lnum: number): string #{{{3
@@ -317,10 +275,10 @@ def GiveHint() #{{{3
         return
     endif
     var name: string = expand('<cword>')->substitute('^\d\+\s\+', '', '')
-    if INST2HINT->has_key(name)
-        popup_atcursor(INST2HINT[name], POPUP_OPTS)
-    elseif INST2HINT->has_key('ISN_' .. name)
-        popup_atcursor(INST2HINT['ISN_' .. name], POPUP_OPTS)
+    if HINTS->has_key(name)
+        popup_atcursor(HINTS[name], POPUP_OPTS)
+    elseif HINTS->has_key('ISN_' .. name)
+        popup_atcursor(HINTS['ISN_' .. name], POPUP_OPTS)
     endif
 enddef
 
