@@ -2,7 +2,7 @@ vim9script noclear
 
 const HEADERFILE: string = $HOME .. '/Vcs/vim/src/vim9.h'
 if !HEADERFILE->filereadable()
-    unsilent echom printf('cannot read Vim9 header file at: %s', HEADERFILE)
+    echom printf('cannot read Vim9 header file at: %s', HEADERFILE)
     finish
 endif
 
@@ -66,4 +66,4 @@ def WriteImportFile()
     update
 enddef
 
-WriteImportFile()
+silent WriteImportFile()
