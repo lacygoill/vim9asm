@@ -10,10 +10,10 @@ syn match vim9asmInsArguments /.*/ contained display
 
 syn match vim9asmComment /^\s*#.*/ display
 
-hi link vim9asmFuncname Title
-hi link vim9asmInsIndex Number
-hi link vim9asmInsName Statement
-hi link vim9asmInsArguments MoreMsg
-hi link vim9asmComment Comment
+hi def link vim9asmFuncname Title
+hi def link vim9asmInsIndex Number
+hi def link vim9asmInsName Statement
+hi def link vim9asmInsArguments MoreMsg
+hi def link vim9asmComment Comment
 
 let b:current_syntax = 'vim9asm'
