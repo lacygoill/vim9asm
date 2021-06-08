@@ -6,7 +6,7 @@ if !HEADERFILE->filereadable()
     finish
 endif
 
-const IMPORT_FILEPATH: string = expand('<sfile>:p:h:h') .. '/import/vim9asm.vim'
+const IMPORT_FILEPATH: string = expand('<sfile>:p:h:h') .. '/import/hints.vim'
 
 def WriteImportFile()
     # extract the hints from the Vim9 header file

@@ -2,12 +2,15 @@ vim9script
 
 # Options {{{1
 
-setlocal foldmethod=expr
-setlocal foldexpr=vim9asm#foldexpr(v:lnum)
-setlocal foldtext=vim9asm#foldtext(v:lnum)
-setlocal foldminlines=0
+&l:foldmethod = 'expr'
+&l:foldexpr = 'vim9asm#foldexpr(v:lnum)'
+&l:foldtext = 'vim9asm#foldtext(v:lnum)'
+&l:foldminlines = 0
 
-setlocal buftype=nofile nomodifiable noswapfile readonly
+&l:buftype = 'nofile'
+&l:modifiable = false
+&l:swapfile = false
+&l:readonly = true
 
 # Mappings {{{1
 

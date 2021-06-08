@@ -1,3 +1,5 @@
+vim9script
+
 if exists('b:current_syntax')
     finish
 endif
@@ -16,4 +18,4 @@ hi def link vim9asmInsName Statement
 hi def link vim9asmInsArguments MoreMsg
 hi def link vim9asmComment Comment
 
-let b:current_syntax = 'vim9asm'
+b:current_syntax = 'vim9asm'

@@ -1,8 +1,8 @@
 vim9script noclear
 
 export const HINTS: dict<string> = {
-    ISN_2BOOL: 'falsy/truthy to bool, invert if isn_arg.number != 0',
-    ISN_2STRING: 'convert value to string at isn_arg.number on stack',
+    ISN_2BOOL: 'falsy/truthy to bool, uses isn_arg.tobool',
+    ISN_2STRING: 'convert value to string at isn_arg.tostring on stack',
     ISN_2STRING_ANY: 'like ISN_2STRING but check type',
     ISN_ADDBLOB: 'add two blobs',
     ISN_ADDLIST: 'add two lists',
@@ -42,6 +42,7 @@ export const HINTS: dict<string> = {
     ISN_EXEC: 'execute Ex command line isn_arg.string',
     ISN_EXECCONCAT: 'execute Ex command from isn_arg.number items on stack',
     ISN_EXECUTE: 'execute Ex commands isn_arg.number items on top of stack',
+    ISN_EXEC_SPLIT: 'execute Ex command from isn_arg.string split at NL',
     ISN_FINALLY: 'start of :finally block',
     ISN_FINISH: 'end marker in list of instructions',
     ISN_FOR: 'get next item from a list, uses isn_arg.forloop',
