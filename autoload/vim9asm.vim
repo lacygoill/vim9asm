@@ -65,23 +65,26 @@ def vim9asm#complete(arglead: string, _, _): list<string> #{{{3
     return arglead
         ->substitute('^\Cs:', '<SNR>*', '')
         ->getcompletion('function')
-        ->filter((_, v: string): bool => !(v =~ '^\l' && v !~ '#'))
+        ->filter((_, v: string): bool => v !~ '^\l' || v =~ '#')
+        + ['debug', 'profile']
+        ->filter((_, v: string): bool => v =~ '^' .. arglead)
 enddef
 
 def vim9asm#disassemble( #{{{3
-    funcname: string,
-    bang: string,
+    args: string,
     mods: string
 )
-    if funcname->empty()
+    if args->empty()
         echo USAGE->join("\n")
         return
     endif
 
-    var name: string = funcname->trim(')')->trim('(')
+    # normalize the  buffer name so that  we can reliably determine  whether its
+    # instructions are already displayed somewhere
+    var bufname: string = args->substitute('()\=$', '', '') .. '()'
     # special case, we've already disassembled the function
-    if bufexists(name)
-        var buf: number = bufnr(name)
+    if bufexists(bufname)
+        var buf: number = bufnr(bufname)
         var winid: number = buf
             ->win_findbuf()
             ->get(0)
@@ -101,13 +104,13 @@ def vim9asm#disassemble( #{{{3
 
     var instructions: list<string>
     try
-        instructions = execute('disa' .. bang .. ' ' .. name)->split('\n')
+        instructions = execute('disa' .. ' ' .. args)->split('\n')
     # E1061: Cannot find function Funcname
     catch /^Vim\%((\a\+)\)\=:E1061:/
         # If `:Disa` was executed from  a script, rather than interactively from
         # the command-line, we should retry  after looking for "Funcname" in the
         # script namespace.
-        instructions = RetryAsLocalFunction(bang, name)
+        instructions = RetryAsLocalFunction(args)
         if instructions->empty()
             Error(v:exception)
             return
@@ -132,7 +135,7 @@ def vim9asm#disassemble( #{{{3
     if autohint
         exe 'Vim9asmHint'
     endif
-    exe 'file ' .. name->fnameescape()
+    exe 'file ' .. bufname->fnameescape()
     PushFuncOnStack()
 enddef
 
@@ -240,29 +243,31 @@ def PushFuncOnStack() #{{{3
     func_stacks[winid] += [bufnr('%')]
 enddef
 
-def RetryAsLocalFunction( #{{{3
-    bang: string,
-    name: string
-): list<string>
+def RetryAsLocalFunction(args: string): list<string> #{{{3
+    var funcname: string = args
+        ->substitute('^\%(debug\|profile\)\s\+\|($\|()$', '', 'g')
 
-    if name =~ ':' && name !~ '^s:'
+    if funcname =~ ':' && funcname !~ '^s:'
         return []
     endif
-    var basename: string = name->substitute('^s:', '', '')
+
+    var basename: string = funcname->substitute('^s:', '', '')
     # list of function names matching the one we're looking for
     var fullnames: list<string> = getcompletion('*' .. basename .. '(', 'function')
     # path to the script from where `:Disa` has been executed
     var calling_script: string = GetCallingScript()
-    var fullname: string = fullnames
+    var full_funcname: string = fullnames
         # the function we're looking for *must* have been defined in the calling script
         ->filter((_, v: string): bool => v->GetFuncScript() == calling_script)
         ->get(0, '')
-    if fullname !~ '^<SNR>\d\+_' .. basename .. '('
+    if full_funcname !~ '^<SNR>\d\+_' .. basename .. '('
         return []
     endif
     var instructions: list<string>
     try
-        instructions = execute('disa' .. bang .. ' ' .. fullname)
+        var debug_or_profile: string = args->matchstr('^\%(debug\|profile\)\ze\s')
+        instructions = printf('disa %s %s', debug_or_profile, full_funcname)
+            ->execute()
             ->split('\n')
     catch
         return []
@@ -274,11 +279,11 @@ def GiveHint() #{{{3
     if NothingUnderCursor() || PopupIsOpen()
         return
     endif
-    var name: string = expand('<cword>')->substitute('^\d\+\s\+', '', '')
-    if HINTS->has_key(name)
-        popup_atcursor(HINTS[name], POPUP_OPTS)
-    elseif HINTS->has_key('ISN_' .. name)
-        popup_atcursor(HINTS['ISN_' .. name], POPUP_OPTS)
+    var instruction: string = expand('<cword>')->substitute('^\d\+\s\+', '', '')
+    if HINTS->has_key(instruction)
+        popup_atcursor(HINTS[instruction], POPUP_OPTS)
+    elseif HINTS->has_key('ISN_' .. instruction)
+        popup_atcursor(HINTS['ISN_' .. instruction], POPUP_OPTS)
     endif
 enddef
 

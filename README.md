@@ -9,10 +9,13 @@ This package provides a custom `:Disassemble` command whose purpose is to displa
 # Usage
 
     # display generated instructions for MyCompiledFunction in a new horizontal split window
-    :Disassemble MyCompiledFunctionName
+    :Disassemble MyCompiledFunctionName()
 
     # same thing but with the instructions used for profiling and in a vertical split window
-    :vertical Disassemble! MyCompiledFunctionName
+    :vertical Disassemble profile MyCompiledFunctionName()
+
+    # same thing but with the instructions used for debugging and in a new tab page
+    :tab Disassemble debug MyCompiledFunctionName()
 
     # display a hint popup when the cursor is over an instruction name
     :Vim9asmHint
