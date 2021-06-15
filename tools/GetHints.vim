@@ -46,22 +46,22 @@ def WriteImportFile()
     exe 'e ' .. IMPORT_FILEPATH
 
     # break dictionary after the opening `{`
-    :1/^\%x7b/s/{\zs\ze'/\r/
+    :1/^\%x7b/ s/{\zs\ze'/\r/
     # break each item in dictionary on a separate line
     :s/',\zs \ze'/\r/g
     # break dictionary before the closing `}`
-    :$s/'\zs\ze}/,\r/
+    :$ s/'\zs\ze}/,\r/
     # indent dictionary items
-    :1/^{$/+,$?^}$?-s/^/    /
+    :1/^{$/+,$?^}$?- s/^/    /
     # remove quotes around dictionary keys
-    :'[,']s/'\([^']*\)'/\1/
+    :'[,'] s/'\([^']*\)'/\1/
     # sort keys
-    :'[,']sort
+    :'[,'] sort
 
     # turn file into a Vim9 script
     ['vim9script noclear', '']->append(0)
     # assign dictionary to importable item
-    :1/\%x7b/s/^/export const HINTS: dict<string> = /
+    :1/\%x7b/ s/^/export const HINTS: dict<string> = /
     # write the import file
     update
 enddef

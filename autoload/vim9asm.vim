@@ -337,7 +337,7 @@ def GetCallingScript(): string #{{{3
 enddef
 
 def GetFuncScript(funcname: string): string #{{{3
-    return execute('verb def ' .. funcname->trim(')')->trim('('))
+    return execute('verb def ' .. funcname->trim('()'))
         ->split('\n')
         ->get(1, '')
         ->matchstr('^\s*Last set from \zs\S\+')
