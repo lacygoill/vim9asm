@@ -1,4 +1,4 @@
-vim9script noclear
+vim9script
 
 export const HINTS: dict<string> = {
     ISN_2BOOL: 'falsy/truthy to bool, uses isn_arg.tobool',
@@ -33,6 +33,7 @@ export const HINTS: dict<string> = {
     ISN_CONCAT: 'expression operations',
     ISN_COND2BOOL: 'convert value to bool',
     ISN_DCALL: 'call def function isn_arg.dfunc',
+    ISN_DEBUG: 'check for debug breakpoint, isn_arg.number is current number of local variables',
     ISN_DEF: 'list functions',
     ISN_DROP: 'pop stack and discard value',
     ISN_ECHO: 'echo isn_arg.echo.echo_count items on top of stack',
@@ -100,7 +101,7 @@ export const HINTS: dict<string> = {
     ISN_REDIREND: ':redir END, isn_arg.number == 1 for append',
     ISN_REDIRSTART: ':redir =>',
     ISN_RETURN: 'return, result is on top of stack',
-    ISN_RETURN_ZERO: 'Push zero, then return',
+    ISN_RETURN_VOID: 'Push void, then return',
     ISN_SETTYPE: 'set dict type to isn_arg.type.ct_type',
     ISN_SHUFFLE: 'move item on stack up or down',
     ISN_SLICE: 'drop isn_arg.number items from start of list',
