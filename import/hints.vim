@@ -1,4 +1,4 @@
-vim9script
+vim9script noclear
 
 export const HINTS: dict<string> = {
     ISN_2BOOL: 'falsy/truthy to bool, uses isn_arg.tobool',
@@ -33,7 +33,7 @@ export const HINTS: dict<string> = {
     ISN_CONCAT: 'expression operations',
     ISN_COND2BOOL: 'convert value to bool',
     ISN_DCALL: 'call def function isn_arg.dfunc',
-    ISN_DEBUG: 'check for debug breakpoint, isn_arg.number is current number of local variables',
+    ISN_DEBUG: 'check for debug breakpoint, uses isn_arg.debug',
     ISN_DEF: 'list functions',
     ISN_DROP: 'pop stack and discard value',
     ISN_ECHO: 'echo isn_arg.echo.echo_count items on top of stack',
@@ -134,7 +134,7 @@ export const HINTS: dict<string> = {
     ISN_UNLETINDEX: 'unlet item of list or dict',
     ISN_UNLETRANGE: 'unlet items of list',
     ISN_UNPACK: 'unpack list into items, uses isn_arg.unpack',
-    JUMP_ALWAYS: 'arguments to ISN_UCALL and ISN_XCALL',
+    JUMP_ALWAYS: 'arguments to ISN_GETITEM',
     JUMP_AND_KEEP_IF_FALSE: 'jump if top of stack is falsy, drop if not',
     JUMP_AND_KEEP_IF_TRUE: 'jump if top of stack is truthy, drop if not',
     JUMP_IF_COND_FALSE: 'jump if top of stack is false, drop if not',
