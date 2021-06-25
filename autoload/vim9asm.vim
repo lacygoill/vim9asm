@@ -172,10 +172,9 @@ def vim9asm#focus(disable: bool) #{{{3
         endif
         for lhs in keys(TRANSLATED)
             exe printf(
-                'nno <buffer><nowait> %s <cmd>call <sid>MoveAndOpenFold(%s, %d)<cr>',
+                'nno <buffer><nowait> %s <cmd>call <sid>MoveAndOpenFold(%s, v:count)<cr>',
                     lhs,
                     lhs->substitute('^<\([^>]*>\)$', '<lt>\1', '')->string(),
-                    v:count,
             )
         endfor
     elseif disable && !maparg->empty()
