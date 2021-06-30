@@ -2,7 +2,7 @@ vim9script noclear
 
 const HEADERFILE: string = $HOME .. '/Vcs/vim/src/vim9.h'
 if !HEADERFILE->filereadable()
-    echom printf('cannot read Vim9 header file at: %s', HEADERFILE)
+    echomsg printf('cannot read Vim9 header file at: %s', HEADERFILE)
     finish
 endif
 
@@ -43,18 +43,18 @@ def GenerateImportFile()
 
     # write the hints
     [hints->string()]->writefile(IMPORT_FILEPATH)
-    exe 'e ' .. IMPORT_FILEPATH
+    execute 'edit ' .. IMPORT_FILEPATH
 
     # break dictionary after the opening `{`
-    :1/^\%x7b/ s/{\zs\ze'/\r/
+    :1/^\%x7b/ substitute/{\zs\ze'/\r/
     # break each item in dictionary on a separate line
-    :s/',\zs \ze'/\r/g
+    :substitute/',\zs \ze'/\r/g
     # break dictionary before the closing `}`
-    :$ s/'\zs\ze}/,\r/
+    :$ substitute/'\zs\ze}/,\r/
     # indent dictionary items
-    :1/^{$/+,$?^}$?- s/^/    /
+    :1/^{$/+1,$?^}$?-1 substitute/^/    /
     # remove quotes around dictionary keys
-    :'[,'] s/'\([^']*\)'/\1/
+    :'[,'] substitute/'\([^']*\)'/\1/
     # sort keys
     :'[,'] sort
 
@@ -69,11 +69,11 @@ def GenerateImportFile()
     header[-2] = header[-2]->substitute('%s', sfile, '')
     header->append(0)
     # assign dictionary to importable item
-    :1/\%x7b/ s/^/export const HINTS: dict<string> = /
+    :1/\%x7b/ substitute/^/export const HINTS: dict<string> = /
     # write the import file
     update
     # highlight with Vim9 syntax; not the legacy one
-    do Syntax
+    doautocmd Syntax
 enddef
 var sfile = expand('<sfile>:p:t')
 

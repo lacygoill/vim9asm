@@ -36,10 +36,10 @@ import HINTS from '../import/hints.vim'
 const TRANSLATED: dict<string> = {
     j: 'j',
     k: 'k',
-    '<down>': "\<down>",
-    '<up>': "\<up>",
-    '<c-d>': "\<c-d>",
-    '<c-u>': "\<c-u>",
+    '<Down>': "\<Down>",
+    '<Up>': "\<Up>",
+    '<C-D>': "\<C-D>",
+    '<C-U>': "\<C-U>",
     gg: 'gg',
     G: 'G',
 }
@@ -96,7 +96,7 @@ def vim9asm#disassemble( #{{{3
             if mods != 'nosplit'
                 SplitWindow(mods)
             endif
-            exe 'b ' .. buf
+            execute 'buffer ' .. buf
             PushFuncOnStack()
         endif
         return
@@ -126,16 +126,16 @@ def vim9asm#disassemble( #{{{3
 
     SplitWindow(mods)
     instructions->setline(1)
-    setf vim9asm
+    setfiletype vim9asm
     if autofocus
-        # `:exe` is necessary to suppress an error at compile time.
+        # `:execute` is necessary to suppress an error at compile time.
         # The command is only installed in a vim9asm buffer.
-        exe 'Vim9asmFocus'
+        execute 'Vim9asmFocus'
     endif
     if autohint
-        exe 'Vim9asmHint'
+        execute 'Vim9asmHint'
     endif
-    exe 'file ' .. bufname->fnameescape()
+    execute 'file ' .. bufname->fnameescape()
     PushFuncOnStack()
 enddef
 
@@ -168,30 +168,30 @@ def vim9asm#focus(disable: bool) #{{{3
     var maparg: dict<any> = maparg('j', 'n', false, true)
     if !disable && (maparg->empty() || !maparg.buffer)
         if foldclosed('.') >= 0
-            norm! zvzz
+            normal! zvzz
         endif
         for lhs in keys(TRANSLATED)
-            exe printf(
-                'nno <buffer><nowait> %s <cmd>call <sid>MoveAndOpenFold(%s, v:count)<cr>',
+            execute printf(
+                'nnoremap <buffer><nowait> %s <Cmd>call <SID>MoveAndOpenFold(%s, v:count)<CR>',
                     lhs,
                     lhs->substitute('^<\([^>]*>\)$', '<lt>\1', '')->string(),
             )
         endfor
     elseif disable && !maparg->empty()
         for lhs in keys(TRANSLATED)
-            exe 'sil! nunmap <buffer> ' .. lhs
+            execute 'silent! nunmap <buffer> ' .. lhs
         endfor
     endif
 enddef
 
 def vim9asm#hint(disable: bool) #{{{3
     if disable
-        sil! au! Vim9asmHint * <buffer>
+        silent! autocmd! Vim9asmHint * <buffer>
 
     elseif !disable
         augroup Vim9asmHint
-            au! * <buffer>
-            au CursorMoved <buffer> GiveHint()
+            autocmd! * <buffer>
+            autocmd CursorMoved <buffer> GiveHint()
         augroup END
     endif
 enddef
@@ -230,7 +230,7 @@ def vim9asm#popFuncFromStack() #{{{3
         return
     endif
     func_stacks[winid]->remove(-1)
-    exe 'b ' .. func_stacks[winid][-1]
+    execute 'buffer ' .. func_stacks[winid][-1]
 enddef
 #}}}2
 # Core {{{2
@@ -289,8 +289,8 @@ enddef
 def MoveAndOpenFold(lhs: string, cnt: number) #{{{3
     var old_foldlevel: number = foldlevel('.')
     var old_winline: number = winline()
-    if lhs == 'j' || lhs == '<down>'
-        norm! gj
+    if lhs == 'j' || lhs == '<Down>'
+        normal! gj
         if getline('.') =~ '^#\+$'
             return
         endif
@@ -298,10 +298,10 @@ def MoveAndOpenFold(lhs: string, cnt: number) #{{{3
         var new_foldlevel: number = foldlevel('.')
         var level_changed: bool = new_foldlevel != old_foldlevel
         if is_in_a_closed_fold || level_changed
-            norm! zMzv
+            normal! zMzv
         endif
-    elseif lhs == 'k' || lhs == '<up>'
-        norm! gk
+    elseif lhs == 'k' || lhs == '<Up>'
+        normal! gk
         if getline('.') =~ '^#\+$'
             return
         endif
@@ -309,10 +309,10 @@ def MoveAndOpenFold(lhs: string, cnt: number) #{{{3
         var new_foldlevel: number = foldlevel('.')
         var level_changed: bool = new_foldlevel != old_foldlevel
         if is_in_a_closed_fold || level_changed
-            sil! norm! gjzRgkzMzv
+            silent! normal! gjzRgkzMzv
         endif
     else
-        exe 'sil! norm! zR'
+        execute 'silent! normal! zR'
             .. (cnt != 0 ? cnt : '')
             .. TRANSLATED[lhs] .. 'zMzv'
     endif
@@ -323,7 +323,7 @@ def SplitWindow(mods: string) #{{{3
     if mods == 'nosplit'
         enew
     else
-        exe mods .. ' new'
+        execute mods .. ' new'
     endif
 enddef
 
@@ -336,7 +336,7 @@ def GetCallingScript(): string #{{{3
 enddef
 
 def GetFuncScript(funcname: string): string #{{{3
-    return execute('verb def ' .. funcname->trim('()'))
+    return execute('verbose def ' .. funcname->trim('()'))
         ->split('\n')
         ->get(1, '')
         ->matchstr('^\s*Last set from \zs\S\+')
@@ -344,10 +344,10 @@ def GetFuncScript(funcname: string): string #{{{3
 enddef
 
 def Error(msg: string) #{{{3
-    # `:h :echo-redraw`
+    # `:help :echo-redraw`
     redraw
     echohl ErrorMsg
-    echom msg
+    echomsg msg
     echohl NONE
 enddef
 

@@ -1,3 +1,3 @@
 vim9script noclear
 
-au BufRead,BufNewFile *.vim9asm setf vim9asm
+autocmd BufRead,BufNewFile *.vim9asm setfiletype vim9asm
