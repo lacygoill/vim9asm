@@ -141,16 +141,16 @@ enddef
 
 def vim9asm#disassembleFunctionUnderCursor() #{{{3
     var col: number = col('.')
-    var cursor_is_after: string = '\%<' .. (col + 1) .. 'c'
-    var cursor_is_before: string = '\%>' .. col .. 'c'
+    var before_cursor: string = '\%(\%<.c\|\%.c\)'
+    var after_cursor: string = '\%>.c'
 
     var Im_here: string = '[^ (]\+'
     var defcall: string = '^\s*\d\+\s\+\CDCALL\s\+'
-        .. '\zs' .. cursor_is_after .. Im_here .. cursor_is_before
+        .. '\zs' .. before_cursor .. Im_here .. after_cursor
 
     Im_here = '<lambda>\d\+\>'
     var lambda: string =
-        cursor_is_after .. '\C' .. Im_here .. cursor_is_before
+        before_cursor .. '\C' .. Im_here .. after_cursor
 
     var curline: string = getline('.')
     if curline =~ lambda
@@ -170,7 +170,7 @@ def vim9asm#focus(disable: bool) #{{{3
         if foldclosed('.') >= 0
             normal! zvzz
         endif
-        for lhs in keys(TRANSLATED)
+        for lhs in TRANSLATED->keys()
             execute printf(
                 'nnoremap <buffer><nowait> %s <Cmd>call <SID>MoveAndOpenFold(%s, v:count)<CR>',
                     lhs,
@@ -178,7 +178,7 @@ def vim9asm#focus(disable: bool) #{{{3
             )
         endfor
     elseif disable && !maparg->empty()
-        for lhs in keys(TRANSLATED)
+        for lhs in TRANSLATED->keys()
             execute 'silent! nunmap <buffer> ' .. lhs
         endfor
     endif
@@ -357,9 +357,9 @@ enddef
 
 def PopupIsOpen(): bool #{{{3
     return popup_list()
-        ->map((_, v: number): number => v
-                                        ->popup_getoptions().moved
-                                        ->get(0))
+        ->map((_, v: number) => v
+                                ->popup_getoptions().moved
+                                ->get(0))
         ->index(line('.')) >= 0
 enddef
 
