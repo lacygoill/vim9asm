@@ -104,12 +104,12 @@ def vim9asm#disassemble( #{{{3
 
     var instructions: list<string>
     try
-        instructions = execute('disa' .. ' ' .. args)->split('\n')
+        instructions = execute('disassemble ' .. args)->split('\n')
     # E1061: Cannot find function Funcname
     catch /^Vim\%((\a\+)\)\=:E1061:/
-        # If `:Disa` was executed from  a script, rather than interactively from
-        # the command-line, we should retry  after looking for "Funcname" in the
-        # script namespace.
+        # If   `:Disassemble`  was   executed   from  a   script,  rather   than
+        # interactively from the command-line, we should retry after looking for
+        # "Funcname" in the script namespace.
         instructions = RetryAsLocalFunction(args)
         if instructions->empty()
             Error(v:exception)
@@ -156,11 +156,11 @@ def vim9asm#disassembleFunctionUnderCursor() #{{{3
     if curline =~ lambda
         curline
             ->matchstr(lambda)
-            ->vim9asm#disassemble('', 'nosplit')
+            ->vim9asm#disassemble('nosplit')
     elseif curline =~ defcall
         curline
             ->matchstr(defcall)
-            ->vim9asm#disassemble('', 'nosplit')
+            ->vim9asm#disassemble('nosplit')
     endif
 enddef
 
@@ -253,7 +253,7 @@ def RetryAsLocalFunction(args: string): list<string> #{{{3
     var basename: string = funcname->substitute('^s:', '', '')
     # list of function names matching the one we're looking for
     var fullnames: list<string> = getcompletion('*' .. basename .. '(', 'function')
-    # path to the script from where `:Disa` has been executed
+    # path to the script from where `:Disassemble` has been executed
     var calling_script: string = GetCallingScript()
     var full_funcname: string = fullnames
         # the function we're looking for *must* have been defined in the calling script
@@ -265,7 +265,7 @@ def RetryAsLocalFunction(args: string): list<string> #{{{3
     var instructions: list<string>
     try
         var debug_or_profile: string = args->matchstr('^\%(debug\|profile\)\ze\s')
-        instructions = printf('disa %s %s', debug_or_profile, full_funcname)
+        instructions = printf('disassemble %s %s', debug_or_profile, full_funcname)
             ->execute()
             ->split('\n')
     catch
