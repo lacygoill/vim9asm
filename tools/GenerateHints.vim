@@ -15,7 +15,7 @@ def GenerateImportFile()
     var get_ins_name: string = '^\C\s*\zs[A-Z_0-9]\+'
     var get_hint: string = '//\s*\zs.*'
     var i: number
-    for line in lines
+    for line: string in lines
         if line =~ get_ins_name
             var hint: string = line->matchstr(get_hint)
             # the hint could continue on the next line(s)

@@ -170,7 +170,7 @@ def vim9asm#focus(disable: bool) #{{{3
         if foldclosed('.') >= 0
             normal! zvzz
         endif
-        for lhs in TRANSLATED->keys()
+        for lhs: string in TRANSLATED->keys()
             execute printf(
                 'nnoremap <buffer><nowait> %s <Cmd>call <SID>MoveAndOpenFold(%s, v:count)<CR>',
                     lhs,
@@ -178,7 +178,7 @@ def vim9asm#focus(disable: bool) #{{{3
             )
         endfor
     elseif disable && !maparg->empty()
-        for lhs in TRANSLATED->keys()
+        for lhs: string in TRANSLATED->keys()
             execute 'silent! nunmap <buffer> ' .. lhs
         endfor
     endif
