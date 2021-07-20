@@ -12,10 +12,10 @@ syntax match vim9asmInsArguments /.*/ contained display
 
 syntax match vim9asmComment /^\s*#.*/ display
 
-highlight def link vim9asmFuncname Title
-highlight def link vim9asmInsIndex Number
-highlight def link vim9asmInsName Statement
-highlight def link vim9asmInsArguments MoreMsg
-highlight def link vim9asmComment Comment
+highlight default link vim9asmFuncname Title
+highlight default link vim9asmInsIndex Number
+highlight default link vim9asmInsName Statement
+highlight default link vim9asmInsArguments MoreMsg
+highlight default link vim9asmComment Comment
 
 b:current_syntax = 'vim9asm'
