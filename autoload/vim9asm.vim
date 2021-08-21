@@ -63,7 +63,7 @@ var func_stacks: dict<list<number>>
 # Interface {{{2
 def vim9asm#complete(arglead: string, _, _): list<string> #{{{3
     return arglead
-        ->substitute('^\Cs:', '<SNR>*', '')
+        ->substitute('^\Cs:', '<SNR>[0-9]\\\\+_', '')
         ->getcompletion('function')
         ->filter((_, v: string): bool => v !~ '^\l' || v =~ '#')
         + ['debug', 'profile']
