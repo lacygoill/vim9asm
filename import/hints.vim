@@ -47,6 +47,7 @@ export const HINTS: dict<string> = {
     ISN_ENDTRY: 'take entry off from ec_trystack',
     ISN_EXEC: 'execute Ex command line isn_arg.string',
     ISN_EXECCONCAT: 'execute Ex command from isn_arg.number items on stack',
+    ISN_EXECRANGE: 'execute EX command that is only a range',
     ISN_EXECUTE: ':execute with isn_arg.number items on top of stack',
     ISN_EXEC_SPLIT: 'execute Ex command from isn_arg.string split at NL',
     ISN_FINALLY: 'start of :finally block',
