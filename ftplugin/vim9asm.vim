@@ -30,4 +30,3 @@ b:undo_ftplugin = get(b:, 'undo_ftplugin', 'execute')
     .. '| execute "nunmap <buffer> <C-T>"'
     .. '| delcommand Vim9asmFocus'
     .. '| delcommand Vim9asmHint'
-

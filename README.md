@@ -82,4 +82,3 @@ Then, add this line in your vimrc:
 # License
 
 [VIM License](https://github.com/vim/vim/blob/master/LICENSE)
-

@@ -362,4 +362,3 @@ def PopupIsOpen(): bool #{{{3
                                 ->get(0))
         ->index(line('.')) >= 0
 enddef
-
