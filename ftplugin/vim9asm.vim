@@ -14,8 +14,8 @@ vim9script
 
 # Mappings {{{1
 
-nnoremap <buffer><nowait> <C-]> <Cmd>call vim9asm#disassembleFunctionUnderCursor()<CR>
-nnoremap <buffer><nowait> <C-T> <Cmd>call vim9asm#popFuncFromStack()<CR>
+nnoremap <buffer><nowait> <C-]> <ScriptCmd>vim9asm#disassembleFunctionUnderCursor()<CR>
+nnoremap <buffer><nowait> <C-T> <ScriptCmd>vim9asm#popFuncFromStack()<CR>
 
 # Commands {{{1
 

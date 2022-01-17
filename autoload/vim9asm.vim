@@ -31,7 +31,8 @@ const USAGE: list<string> =<< trim END
         :tab Disassemble MyCompiledFunctionName
 END
 
-import HINTS from '../import/hints.vim'
+import '../import/Hints.vim'
+const HINTS: dict<string> = Hints.HINTS
 
 const TRANSLATED: dict<string> = {
     j: 'j',
@@ -172,7 +173,7 @@ def vim9asm#focus(disable: bool) #{{{3
         endif
         for lhs: string in TRANSLATED->keys()
             execute printf(
-                'nnoremap <buffer><nowait> %s <Cmd>call <SID>MoveAndOpenFold(%s, v:count)<CR>',
+                'nnoremap <buffer><nowait> %s <ScriptCmd>MoveAndOpenFold(%s, v:count)<CR>',
                     lhs,
                     lhs->substitute('^<\([^>]*>\)$', '<lt>\1', '')->string(),
             )
