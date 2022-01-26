@@ -3,6 +3,8 @@ vim9script noclear
 if exists('loaded') | finish | endif
 var loaded = true
 
-command -bar -nargs=* -complete=customlist,vim9asm#complete Disassemble {
-    vim9asm#disassemble(<q-args>, <q-mods>)
+import autoload 'vim9asm.vim'
+
+command -bar -nargs=* -complete=customlist,vim9asm.Complete Disassemble {
+    vim9asm.Disassemble(<q-args>, <q-mods>)
 }

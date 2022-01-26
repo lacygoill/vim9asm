@@ -16,13 +16,13 @@ import autoload 'vim9asm.vim'
 
 # Mappings {{{1
 
-nnoremap <buffer><nowait> <C-]> <ScriptCmd>vim9asm#disassembleFunctionUnderCursor()<CR>
-nnoremap <buffer><nowait> <C-T> <ScriptCmd>vim9asm#popFuncFromStack()<CR>
+nnoremap <buffer><nowait> <C-]> <ScriptCmd>vim9asm.DisassembleFunctionUnderCursor()<CR>
+nnoremap <buffer><nowait> <C-T> <ScriptCmd>vim9asm.PopFuncFromStack()<CR>
 
 # Commands {{{1
 
-command -bar -bang -buffer Vim9asmFocus vim9asm#focus(<bang>0)
-command -bar -bang -buffer Vim9asmHint vim9asm#hint(<bang>0)
+command -bar -bang -buffer Vim9asmFocus vim9asm.Focus(<bang>0)
+command -bar -bang -buffer Vim9asmHint vim9asm.Hint(<bang>0)
 
 # Teardown {{{1
 

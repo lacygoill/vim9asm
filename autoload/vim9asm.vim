@@ -62,7 +62,7 @@ var func_stacks: dict<list<number>>
 
 # Functions {{{1
 # Interface {{{2
-def vim9asm#complete(arglead: string, _, _): list<string> #{{{3
+export def Complete(arglead: string, _, _): list<string> #{{{3
     return arglead
         ->substitute('^\Cs:', '<SNR>[0-9]\\\\+_', '')
         ->getcompletion('function')
@@ -71,7 +71,7 @@ def vim9asm#complete(arglead: string, _, _): list<string> #{{{3
         ->filter((_, v: string): bool => v =~ '^' .. arglead)
 enddef
 
-def vim9asm#disassemble( #{{{3
+export def Disassemble( #{{{3
     args: string,
     mods: string
 )
@@ -140,7 +140,7 @@ def vim9asm#disassemble( #{{{3
     PushFuncOnStack()
 enddef
 
-def vim9asm#disassembleFunctionUnderCursor() #{{{3
+export def DisassembleFunctionUnderCursor() #{{{3
     var col: number = col('.')
     var before_cursor: string = '\%(\%<.c\|\%.c\)'
     var after_cursor: string = '\%>.c'
@@ -157,15 +157,15 @@ def vim9asm#disassembleFunctionUnderCursor() #{{{3
     if curline =~ lambda
         curline
             ->matchstr(lambda)
-            ->vim9asm#disassemble('nosplit')
+            ->Disassemble('nosplit')
     elseif curline =~ defcall
         curline
             ->matchstr(defcall)
-            ->vim9asm#disassemble('nosplit')
+            ->Disassemble('nosplit')
     endif
 enddef
 
-def vim9asm#focus(disable: bool) #{{{3
+export def Focus(disable: bool) #{{{3
     var maparg: dict<any> = maparg('j', 'n', false, true)
     if !disable && (maparg->empty() || !maparg.buffer)
         if foldclosed('.') >= 0
@@ -185,7 +185,7 @@ def vim9asm#focus(disable: bool) #{{{3
     endif
 enddef
 
-def vim9asm#hint(disable: bool) #{{{3
+export def Hint(disable: bool) #{{{3
     if disable
         silent! autocmd! Vim9asmHint * <buffer>
 
@@ -216,7 +216,7 @@ export def FoldText(lnum: number): string #{{{3
     return title
 enddef
 
-def vim9asm#popFuncFromStack() #{{{3
+export def PopFuncFromStack() #{{{3
     var winid: number = win_getid()
     if !func_stacks->has_key(winid)
     # `->empty()` is not enough.  We really need `->len() <= 1`.{{{
