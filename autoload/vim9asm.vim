@@ -31,8 +31,8 @@ const USAGE: list<string> =<< trim END
         :tab Disassemble MyCompiledFunctionName
 END
 
-import '../import/Hints.vim'
-const HINTS: dict<string> = Hints.HINTS
+import '../import/hints.vim'
+const HINTS: dict<string> = hints.HINTS
 
 const TRANSLATED: dict<string> = {
     j: 'j',
@@ -197,11 +197,11 @@ def vim9asm#hint(disable: bool) #{{{3
     endif
 enddef
 
-def vim9asm#foldexpr(lnum: number): string #{{{3
+export def FoldExpr(lnum: number): string #{{{3
     return getline(lnum) =~ VIMSCRIPT_LINE ? '>1' : '='
 enddef
 
-def vim9asm#foldtext(lnum: number): string #{{{3
+export def FoldText(lnum: number): string #{{{3
     var title: string = getline(v:foldstart)
     if title =~ '^\s*#'
         var i: number = v:foldstart + 1

@@ -14,6 +14,7 @@ export const HINTS: dict<string> = {
     ISN_ADDLIST: 'add two lists',
     ISN_ANYINDEX: '[expr] runtime index',
     ISN_ANYSLICE: '[expr:expr] runtime slice',
+    ISN_AUTOLOAD: 'get item from autoload import, function or variable',
     ISN_BCALL: 'call builtin function isn_arg.bfunc',
     ISN_BLOBAPPEND: 'append to a blob, like add()',
     ISN_BLOBINDEX: '[expr] blob index',
