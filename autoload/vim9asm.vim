@@ -332,7 +332,7 @@ def GetCallingScript(): string #{{{3
     var calls: list<string> = expand('<stack>')
         ->split('\.\.')
     return calls
-        ->get(calls->match('\C\<vim9asm#disassemble\>') - 1, '')
+        ->get(calls->match('\C\<vim9asm#Disassemble\>') - 1, '')
         ->matchstr('\S\+\ze\[\d\+\]$')
 enddef
 
