@@ -110,7 +110,7 @@ export def Disassemble( #{{{3
     catch /^Vim\%((\a\+)\)\=:E1061:/
         # If   `:Disassemble`  was   executed   from  a   script,  rather   than
         # interactively from the command-line, we should retry after looking for
-        # "Funcname" in the script namespace.
+        # `Funcname` in the script namespace.
         instructions = RetryAsLocalFunction(args)
         if instructions->empty()
             Error(v:exception)
@@ -247,13 +247,12 @@ def RetryAsLocalFunction(args: string): list<string> #{{{3
     var funcname: string = args
         ->substitute('^\%(debug\|profile\)\s\+\|($\|()$', '', 'g')
 
-    if funcname =~ ':' && funcname !~ '^s:'
+    if funcname =~ ':'
         return []
     endif
 
-    var basename: string = funcname->substitute('^s:', '', '')
     # list of function names matching the one we're looking for
-    var fullnames: list<string> = getcompletion('*' .. basename .. '(', 'function')
+    var fullnames: list<string> = getcompletion('*' .. funcname .. '(', 'function')
     # path to the script from where `:Disassemble` has been executed
     var calling_script: string = GetCallingScript()
     var full_funcname: string = fullnames

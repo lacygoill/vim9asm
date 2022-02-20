@@ -26,7 +26,7 @@ command -bar -bang -buffer Vim9asmHint vim9asm.Hint(<bang>0)
 
 # Teardown {{{1
 
-b:undo_ftplugin = get(b:, 'undo_ftplugin', 'execute')
+b:undo_ftplugin = (get(b:, 'undo_ftplugin') ?? 'execute')
     .. '| set buftype< foldexpr< foldmethod< foldminlines< foldtext< modifiable< readonly< swapfile<'
     .. '| execute "nunmap <buffer> <C-]>"'
     .. '| execute "nunmap <buffer> <C-T>"'
