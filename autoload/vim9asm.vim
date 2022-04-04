@@ -259,7 +259,7 @@ def RetryAsLocalFunction(args: string): list<string> #{{{3
         # the function we're looking for *must* have been defined in the calling script
         ->filter((_, v: string): bool => v->GetFuncScript() == calling_script)
         ->get(0, '')
-    if full_funcname !~ '^<SNR>\d\+_' .. basename .. '('
+    if full_funcname !~ '^<SNR>\d\+_' .. funcname .. '('
         return []
     endif
     var instructions: list<string>
