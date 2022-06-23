@@ -1,6 +1,6 @@
 vim9script noclear
 
-const HEADERFILE: string = $HOME .. '/Vcs/vim/src/vim9.h'
+const HEADERFILE: string = $HOME .. '/VCS/vim/src/vim9.h'
 if !HEADERFILE->filereadable()
     echomsg printf('cannot read Vim9 header file at: %s', HEADERFILE)
     finish
