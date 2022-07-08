@@ -63,12 +63,15 @@ var func_stacks: dict<list<number>>
 # Functions {{{1
 # Interface {{{2
 export def Complete(arglead: string, _, _): list<string> #{{{3
-    return arglead
+    return (
+          arglead
         ->substitute('^\Cs:', '<SNR>[0-9]\\\\+_', '')
         ->getcompletion('function')
         ->filter((_, v: string): bool => v !~ '^\l' || v =~ '#')
         + ['debug', 'profile']
+        )
         ->filter((_, v: string): bool => v =~ '^' .. arglead)
+        ->map((_, v: string) => v->trim('()'))
 enddef
 
 export def Disassemble( #{{{3
