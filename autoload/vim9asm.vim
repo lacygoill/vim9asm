@@ -243,7 +243,7 @@ def PushFuncOnStack() #{{{3
     if !func_stacks->has_key(winid)
         func_stacks->extend({[winid]: []})
     endif
-    func_stacks[winid] += [bufnr('%')]
+    func_stacks[winid]->add(bufnr('%'))
 enddef
 
 def RetryAsLocalFunction(args: string): list<string> #{{{3
