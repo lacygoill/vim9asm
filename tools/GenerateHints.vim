@@ -14,8 +14,7 @@ def GenerateImportFile()
     var hints: dict<string>
     var get_ins_name: string = '^\C\s*\zs[A-Z_0-9]\+'
     var get_hint: string = '//\s*\zs.*'
-    var i: number
-    for line: string in lines
+    for [i: number, line: string] in lines->items()
         if line =~ get_ins_name
             var hint: string = line->matchstr(get_hint)
             # the hint could continue on the next line(s)
@@ -37,7 +36,6 @@ def GenerateImportFile()
             endif
             hints[line->matchstr(get_ins_name)] = hint
         endif
-        ++i
     endfor
     hints->filter((_, v: string): bool => v =~ '\S')
 
