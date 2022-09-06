@@ -5,6 +5,9 @@ vim9script
 
 export const HINTS: dict<string> = {
     BLOCK_SCOPE: 'values for ctx_skip',
+    CA_NOT_SPECIAL: 'lhs_name is not NULL',
+    CA_SEARCHPAIR: '{skip} in searchpair() and searchpairpos()',
+    CA_SUBSTITUTE: '{sub} in substitute(), when prefixed with \=',
     FOR_SCOPE: 'values for ctx_skip',
     IF_SCOPE: 'values for ctx_skip',
     ISN_2BOOL: 'falsy/truthy to bool, uses isn_arg.tobool',
@@ -43,11 +46,13 @@ export const HINTS: dict<string> = {
     ISN_DCALL: 'call def function isn_arg.dfunc',
     ISN_DEBUG: 'check for debug breakpoint, uses isn_arg.debug',
     ISN_DEF: 'list functions',
+    ISN_DEFER: ':defer  argument count is isn_arg.number',
     ISN_DROP: 'pop stack and discard value',
     ISN_ECHO: ':echo with isn_arg.echo.echo_count items on top of stack',
     ISN_ECHOCONSOLE: ':echoconsole with isn_arg.number items on top of stack',
     ISN_ECHOERR: ':echoerr with isn_arg.number items on top of stack',
     ISN_ECHOMSG: ':echomsg with isn_arg.number items on top of stack',
+    ISN_ECHOWINDOW: ':echowindow with isn_arg.number items on top of stack',
     ISN_ENDTRY: 'take entry off from ec_trystack',
     ISN_EXEC: 'execute Ex command line isn_arg.string',
     ISN_EXECCONCAT: 'execute Ex command from isn_arg.number items on stack',
