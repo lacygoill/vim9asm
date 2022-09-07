@@ -2,7 +2,7 @@ vim9script noclear
 
 const HEADERFILE: string = systemlist('locate --regex "/vim9\.h$"')->get(-1, '')
 if !HEADERFILE->filereadable()
-    echomsg printf('cannot find Vim9 header file')
+    echomsg 'cannot find Vim9 header file'
     finish
 endif
 
