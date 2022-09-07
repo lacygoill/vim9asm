@@ -1,8 +1,8 @@
 vim9script noclear
 
-const HEADERFILE: string = $HOME .. '/VCS/vim/src/vim9.h'
+const HEADERFILE: string = systemlist('locate --regex "/vim9\.h$"')->get(-1, '')
 if !HEADERFILE->filereadable()
-    echomsg printf('cannot read Vim9 header file at: %s', HEADERFILE)
+    echomsg printf('cannot find Vim9 header file')
     finish
 endif
 
