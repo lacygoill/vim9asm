@@ -58,6 +58,8 @@ close all folds except the one in which the cursor is currently.
 
 You can also execute `:Vim9asmHint` to make Vim display a popup displaying a
 hint about the instruction name under the cursor.
+If you hints to be displayed as virtual texts at the end of the instruction
+lines, execute `:Vim9asmHint virtual` instead.
 
 Both commands can be prefixed with a bang to disable their respective feature.
 
@@ -79,8 +81,8 @@ The hint popups can be customized with `g:vim9asm`: >
     g:vim9asm = {
       # automatically open/close folds
       autofocus: true,
-      # automatically display hint about instruction name under cursor in popup
-      autohint: true,
+      # display hints in popup window (to display them as virtual texts, set the key to 'virtual')
+      hint_type: 'popup',
       hint: {
         # determine background color of popup
         highlight: 'Pmenu',

@@ -2,7 +2,7 @@
 
 Vim9 comes with a builtin `:disassemble` command which displays the low-level instructions generated for a compiled function.  This output cannot be searched, is not syntax highlighted, and does not provide information regarding the meaning of each instruction.
 
-This package provides a custom `:Disassemble` command whose purpose is to display the output of the builtin `:disassemble` command in a new window.  The code is syntax highlighted, and folded to let you focus on the instructions for a given line of Vim9 script.  A hint can be displayed for the instruction name under the cursor.
+This package provides a custom `:Disassemble` command whose purpose is to display the output of the builtin `:disassemble` command in a new window.  The code is syntax highlighted, and folded to let you focus on the instructions for a given line of Vim9 script.  Hints can be displayed for the instructions; either via a dynamic popup window for the instruction name under the cursor, or via virtual texts for all the instructions at once.
 
 ![demo](https://user-images.githubusercontent.com/8505073/114791103-2c56da00-9d86-11eb-9439-5c48834544ce.gif)
 
@@ -20,7 +20,10 @@ This package provides a custom `:Disassemble` command whose purpose is to displa
     # display a hint popup when the cursor is over an instruction name
     :Vim9asmHint
 
-    # stop displaying a hint popup
+    # display hints for all instructions via virtual texts
+    :Vim9asmHint virtual
+
+    # stop displaying hints
     :Vim9asmHint!
 
     # automatically open/close folds to only display instructions
@@ -42,8 +45,10 @@ The plugin can be customized with `g:vim9asm`:
     g:vim9asm = {
       # automatically open/close folds
       autofocus: true,
-      # automatically display hint about instruction name under cursor in popup
+      # automatically display hints about instruction names
       autohint: true,
+      # display hints in popup window (to display them as virtual texts, set the key to 'virtual')
+      hint_type: 'popup',
       hint: {
         # determine background color of popup
         highlight: 'Pmenu',

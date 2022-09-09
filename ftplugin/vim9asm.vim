@@ -22,7 +22,9 @@ nnoremap <buffer><nowait> <C-T> <ScriptCmd>vim9asm.PopFuncFromStack()<CR>
 # Commands {{{1
 
 command -bar -bang -buffer Vim9asmFocus vim9asm.Focus(<bang>0)
-command -bar -bang -buffer Vim9asmHint vim9asm.Hint(<bang>0)
+command -bar -bang -buffer -nargs=? -complete=custom,vim9asm.HintComplete Vim9asmHint {
+    vim9asm.Hint(<bang>0, <bang>0 ? <q-args> : <q-args> ?? 'popup')
+}
 
 # Teardown {{{1
 
