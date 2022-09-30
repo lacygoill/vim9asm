@@ -1,16 +1,17 @@
 vim9script noclear
 
-const HEADERFILE: string = systemlist('locate --regex "/vim9\.h$"')->get(-1, '')
-if !HEADERFILE->filereadable()
-    echomsg 'cannot find Vim9 header file'
-    finish
-endif
-
 const IMPORT_FILEPATH: string = expand('<sfile>:p:h:h') .. '/import/hints.vim'
 
 def GenerateImportFile()
     # extract the hints from the Vim9 header file
-    var lines: list<string> = HEADERFILE->readfile()
+
+    var url: string = 'https://raw.githubusercontent.com/vim/vim/master/src/vim9.h'
+    var lines: list<string> = systemlist($'curl --fail --location --show-error --silent {url}')
+    if lines->len() <= 1
+        echomsg 'cannot download Vim9 header file'
+        return
+    endif
+
     var hints: dict<string>
     var get_ins_name: string = '^\C\s*\zs[A-Z_0-9]\+'
     var get_hint: string = '//\s*\zs.*'
