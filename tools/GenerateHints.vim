@@ -6,8 +6,8 @@ def GenerateImportFile()
     # extract the hints from the Vim9 header file
 
     var url: string = 'https://raw.githubusercontent.com/vim/vim/master/src/vim9.h'
-    var lines: list<string> = systemlist($'curl --fail --location --show-error --silent {url}')
-    if lines->len() <= 1
+    var lines: list<string> = systemlist($'curl --fail --location --silent {url}')
+    if lines->empty()
         echomsg 'cannot download Vim9 header file'
         return
     endif
