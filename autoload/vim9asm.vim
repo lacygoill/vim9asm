@@ -230,11 +230,11 @@ export def Hint(disable: bool, impl: string) #{{{3
     endif
 enddef
 
-export def FoldExpr(lnum: number): string #{{{3
-    return getline(lnum) =~ VIMSCRIPT_LINE ? '>1' : '='
+export def FoldExpr(): string #{{{3
+    return getline(v:lnum) =~ VIMSCRIPT_LINE ? '>1' : '='
 enddef
 
-export def FoldText(lnum: number): string #{{{3
+export def FoldText(): string #{{{3
     var title: string = getline(v:foldstart)
     if title =~ '^\s*#'
         var i: number = v:foldstart + 1

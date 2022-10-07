@@ -5,8 +5,8 @@ import autoload 'vim9asm.vim'
 # Options {{{1
 
 &l:foldmethod = 'expr'
-&l:foldexpr = 'vim9asm.FoldExpr(v:lnum)'
-&l:foldtext = 'vim9asm.FoldText(v:lnum)'
+&l:foldexpr = 'vim9asm.FoldExpr()'
+&l:foldtext = 'vim9asm.FoldText()'
 &l:foldminlines = 0
 
 &l:buftype = 'nofile'
