@@ -45,7 +45,7 @@ export const HINTS: dict<string> = {
     ISN_COMPARESTRING: 'comparative operations; isn_arg.op.op_type is exprtype_T, op_ic used',
     ISN_CONCAT: 'concatenate isn_arg.number strings',
     ISN_COND2BOOL: 'convert value to bool',
-    ISN_CONSTRUCT: 'construct an object, using contstruct_T',
+    ISN_CONSTRUCT: 'construct an object, using construct_T',
     ISN_DCALL: 'call def function isn_arg.dfunc',
     ISN_DEBUG: 'check for debug breakpoint, uses isn_arg.debug',
     ISN_DEF: 'list functions',
