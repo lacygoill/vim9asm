@@ -1,4 +1,4 @@
-vim9script noclear
+vim9script
 
 const IMPORT_FILEPATH: string = expand('<sfile>:p:h:h') .. '/import/hints.vim'
 

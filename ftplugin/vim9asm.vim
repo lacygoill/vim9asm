@@ -1,6 +1,6 @@
-vim9script noclear
+vim9script
 
-import autoload 'vim9asm.vim'
+import autoload '../autoload/vim9asm.vim'
 
 # Options {{{1
 
