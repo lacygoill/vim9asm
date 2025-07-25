@@ -108,7 +108,37 @@ export def Disassemble( #{{{3
 
     var instructions: list<string>
     try
-        instructions = execute($'disassemble {args}')->split('\n')
+        # Problem: We can't disassemble a class method:{{{
+        #
+        #    > A class name cannot be used as an expression.  A class name cannot be used in
+        #    > the left-hand-side of an assignment.
+        #
+        # Source: `:help E1405`
+        #
+        # Solution: Let the user `:disassemble`  the method from their script,
+        # capture the output via `execute()`  and pass the resulting string to
+        # `:Disassemble`.
+        #
+        # Usage Example:
+        #
+        #     class X
+        #       def M(x: number): bool
+        #         return x % 2 == 0
+        #       enddef
+        #     endclass
+        #
+        #     g:foo = execute('disassemble X.M')
+        #     Disassemble g:foo
+        #
+        # https://github.com/lacygoill/vim9asm/issues/8
+        #}}}
+        if args =~ '^g:\S\+$'
+                && exists(args)
+                && args->typename() == 'string'
+            instructions = args->eval()->split('\n')
+        else
+            instructions = execute($'disassemble {args}')->split('\n')
+        endif
     # E1061: Cannot find function Funcname
     catch /^Vim\%((\a\+)\)\=:E1061:/
         # If   `:Disassemble`  was   executed   from  a   script,  rather   than
