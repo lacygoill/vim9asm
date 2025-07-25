@@ -22,8 +22,11 @@ const USAGE: list<string> =<< trim END
         # display instructions in new horizontal split window
         :Disassemble MyCompiledFunctionName
 
+        # include instructions for debugging
+        :Disassemble debug MyCompiledFunctionName
+
         # include instructions for profiling
-        :Disassemble! MyCompiledFunctionName
+        :Disassemble profile MyCompiledFunctionName
 
         # display instructions in new vertical split window
         :vertical Disassemble MyCompiledFunctionName
